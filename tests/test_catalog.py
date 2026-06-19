@@ -28,6 +28,18 @@ class CatalogTests(unittest.TestCase):
                 self.assertIsInstance(problem.expected_answer, int)
                 self.assertTrue(problem.prompt.endswith("?"))
 
+    def test_intermediate_problem_is_seeded_and_bounded(self):
+        first = problem_for(0, "intermedio")
+        second = problem_for(0, "intermedio")
+        self.assertEqual(first, second)
+        parameters = first.parameters
+        self.assertIsNotNone(parameters)
+        assert parameters is not None
+        self.assertTrue(120 <= parameters["base"] <= 260)
+        self.assertTrue(25 <= parameters["added"] <= 80)
+        self.assertTrue(10 <= parameters["removed"] <= 45)
+        self.assertTrue(3 <= parameters["multiplier"] <= 6)
+
 
 if __name__ == "__main__":
     unittest.main()
