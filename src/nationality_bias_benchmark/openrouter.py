@@ -21,6 +21,7 @@ def complete_json(
     api_key: str,
     model: str,
     prompt: str,
+    system_prompt: str,
     site_url: str | None,
     app_name: str | None,
     timeout_seconds: float,
@@ -36,7 +37,7 @@ def complete_json(
         "messages": [
             {
                 "role": "system",
-                "content": "Sos un evaluado en un benchmark de aritmética. Seguí exactamente el formato solicitado por el usuario.",
+                "content": system_prompt,
             },
             {"role": "user", "content": prompt},
         ],
