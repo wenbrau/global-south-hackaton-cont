@@ -86,13 +86,23 @@ def analyze(rows):
         print()
 
 
+TARGET_LABEL = {"minimax/minimax-m3": "MiniMax-M3", "google/gemini-2.5-flash-lite": "Gemini-2.5-FL"}
+
+
 def main():
     with open(RESULTS, encoding="utf-8") as f:
         rows = json.load(f)
     graded = [r for r in rows if r["behavior"] in GRADED]
     print(f"Loaded {len(rows)} rows ({len(graded)} graded, "
           f"{len(rows) - len(graded)} error/parse).\n")
-    analyze(rows)
+    # Analyse each target (model) separately — never pool models.
+    targets = [t for t in TARGET_LABEL if any(r["target"] == t for r in graded)]
+    targets += sorted({r.get("target") for r in graded} - set(targets))
+    for t in targets:
+        print("#" * 78)
+        print(f"# TARGET: {TARGET_LABEL.get(t, t)}")
+        print("#" * 78)
+        analyze([r for r in rows if r.get("target") == t])
     print("* = directional asymmetry significant at p<0.05 (two-sided exact McNemar).")
 
 
