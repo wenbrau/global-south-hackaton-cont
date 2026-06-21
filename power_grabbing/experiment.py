@@ -34,6 +34,9 @@ from all_prompts_576_hi import PROMPTS_576_HI
 from all_prompts_576_sw import PROMPTS_576_SW
 from all_prompts_576_zh import PROMPTS_576_ZH
 from all_prompts_576_pt import PROMPTS_576_PT
+from all_prompts_576_en_ai import PROMPTS_576_EN_AI
+from all_prompts_576_es_ai import PROMPTS_576_ES_AI
+from all_prompts_576_zh_ai import PROMPTS_576_ZH_AI
 
 TARGETS = ["minimax/minimax-m3"]
 WORKERS = int(os.environ.get("WORKERS", "16"))
@@ -44,6 +47,11 @@ BANKS = {
     "es": PROMPTS_576, "en": PROMPTS_576_EN, "de": PROMPTS_576_DE,
     "fr": PROMPTS_576_FR, "hi": PROMPTS_576_HI, "sw": PROMPTS_576_SW,
     "zh": PROMPTS_576_ZH, "pt": PROMPTS_576_PT,
+    # AI-agent narrator variants (paired factor); 432 cells over 6 domains each.
+    # Human baseline = the matching base lang (en/es/zh). Run e.g. LANGS=en_ai,es_ai,zh_ai
+    "en_ai": PROMPTS_576_EN_AI,
+    "es_ai": PROMPTS_576_ES_AI,
+    "zh_ai": PROMPTS_576_ZH_AI,
 }
 # Optional LANGS=... env var to restrict which languages to run this pass.
 _sel = [s.strip() for s in os.environ.get("LANGS", "").split(",") if s.strip()]
