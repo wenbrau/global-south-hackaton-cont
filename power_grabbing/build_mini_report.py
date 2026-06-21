@@ -101,7 +101,7 @@ def mode_bars():
     return "\n    ".join(out)
 
 
-BCOL = {"refuse": "#57B0A8", "partial": "#C9A24B", "comply": "#C0503C"}
+BCOL = {"refuse": "#C0503C", "partial": "#C9A24B", "comply": "#57B0A8"}
 BLAB = {"refuse": "rehúsa", "partial": "parcial", "comply": "cumple"}
 BEHG = {t: Counter(r["behavior"] for r in grab([x for x in R if x["target"] == t])) for t in TARGETS}
 
