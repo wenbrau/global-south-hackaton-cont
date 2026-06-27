@@ -12,8 +12,8 @@ or which directory you run it from -- with two lines::
         _d = os.path.dirname(_d)
     sys.path.insert(0, os.path.join(_d, "common")); import _paths  # noqa
 
-Importing this module puts the engine, the prompt banks, the judge and the
-Inspect helpers on ``sys.path``.
+Importing this module puts the engine, the prompt banks and the judge on
+``sys.path``. The Inspect front end (``Inspect/``) adds its own folder itself.
 """
 import os
 import sys

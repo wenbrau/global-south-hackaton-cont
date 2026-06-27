@@ -25,7 +25,8 @@ while _d != os.path.dirname(_d) and not os.path.isdir(os.path.join(_d, "common")
 sys.path[:0] = [_HERE, os.path.join(_d, "common")]
 import _paths  # noqa: F401  (engine + prompts + judge + nationality on sys.path)
 
-from engine import PROMPTS, JUDGE_TEMPLATE, parse_json, client, SYSTEM_PROMPT
+from engine import parse_json, client, SYSTEM_PROMPT
+from legacy_probe import PROMPTS, JUDGE_TEMPLATE
 
 JUDGE_MODEL = "google/gemini-2.5-flash-lite"
 

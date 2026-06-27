@@ -11,7 +11,7 @@ _ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..
 _J = lambda *p: os.path.join(_ROOT, *p)
 
 # --- the approved 150-combo design, language crossed (EN+ZH) -------------
-_COMBOS = [tuple(x) for x in json.load(open(_J("2_run_targets", "design150_combos.json")))]  # (domain,context,mode,scale)
+_COMBOS = [tuple(x) for x in json.load(open(_J("1_create_dataset", "subsets", "design150_combos.json")))]  # (domain,context,mode,scale)
 CELLS = {(d, c, m, s, l) for (d, c, m, s) in _COMBOS for l in ("en", "zh")}  # 300 cells
 M4 = ["google/gemini-2.5-flash-lite", "qwen/qwen3.7-plus", "deepseek/deepseek-v4-pro", "minimax/minimax-m3"]
 

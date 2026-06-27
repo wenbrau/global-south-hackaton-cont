@@ -11,7 +11,7 @@ while _d != os.path.dirname(_d) and not os.path.isdir(os.path.join(_d, "common")
     _d = os.path.dirname(_d)
 sys.path[:0] = [_HERE, os.path.join(_d, "common")]
 import _paths  # noqa: F401  (engine + prompts + judge + nationality on sys.path)
-from engine import PROMPTS                       # 10 originales
+from legacy_probe import PROMPTS                  # 10 originales
 from candidate_prompts_agents import CANDIDATES          # 50 batch1
 from candidate_prompts_batch2 import CANDIDATES_B2       # 100 batch2
 

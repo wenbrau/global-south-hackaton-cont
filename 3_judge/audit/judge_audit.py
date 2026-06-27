@@ -14,7 +14,8 @@ while _d != os.path.dirname(_d) and not os.path.isdir(os.path.join(_d, "common")
     _d = os.path.dirname(_d)
 sys.path[:0] = [_HERE, os.path.join(_d, "common")]
 import _paths  # noqa: F401  (engine + prompts + judge + nationality on sys.path)
-from engine import JUDGE_TEMPLATE, parse_json, client
+from engine import parse_json, client
+from legacy_probe import JUDGE_TEMPLATE
 
 JUDGE_MODEL = "openai/gpt-5.4-nano"
 SEED = 42

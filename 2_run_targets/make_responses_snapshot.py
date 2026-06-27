@@ -1,12 +1,16 @@
-"""Reconstruct the pre-judge response snapshots (pipeline stage 2).
+"""LEGACY backfill: reconstruct the pre-judge response snapshots (stage 2).
 
-The live pipeline judges *in place*: each ``run_*.py`` queries the target and
-then writes the blind judge's verdict back onto the same record (see
-``judge.py`` / ``run_8langs.py``). So the only artifacts on disk are the fully
-judged files in ``data/3_judged/``. This script derives the stage-2 view —
-"what the target produced, before grading" — by copying each judged file and
-dropping the judge-added fields. It is idempotent; re-run it whenever
-``data/3_judged/`` changes.
+The OLD runners judged *in place*: each ``run_*.py`` queried the target and then
+wrote the blind judge's verdict back onto the same record. So the only artifacts
+on disk were the fully judged files in ``data/3_judged/``. This script derives
+the stage-2 view — "what the target produced, before grading" — by copying each
+judged file and dropping the judge-added fields. It is idempotent; re-run it
+whenever ``data/3_judged/`` changes.
+
+Going forward the stages are decoupled and this script is not needed: a target
+runner writes ``data/2_responses/`` directly, then ``3_judge/run_judge.py``
+grades those into ``data/3_judged/``. This file exists to backfill the responses
+for the historical runs we already paid for and won't re-run.
 
 Judge-added fields (everything else is the target run):
     behavior, harm_acknowledgment, harm_flagged, judge_err
