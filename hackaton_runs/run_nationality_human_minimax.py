@@ -47,6 +47,7 @@ if not os.environ.get("OPENROUTER_API_KEY") and os.path.exists(_ENV):
 # Put the engine + prompt banks + judge on sys.path (see common/_paths.py).
 sys.path[:0] = [_HERE, os.path.join(_d, "common")]
 import _paths  # noqa: F401  (engine + prompts + judge + nationality on sys.path)
+sys.path.insert(0, _HERE)  # use THIS folder's frozen judge.py (not 3_judge/judge.py)
 
 import httpx                                                        # noqa: E402
 from openai import OpenAI                                           # noqa: E402

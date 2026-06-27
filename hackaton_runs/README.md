@@ -12,6 +12,14 @@ These produced the canonical `data/3_judged/*.json` files we already have, and w
 do **not** want to re-run them (cost). They're kept as provenance and as resume-
 aware entry points if a run ever has to be extended.
 
+**Frozen, self-contained judge.** These runners grade with their OWN pinned copy
+of the judge — [`judge.py`](judge.py) + [`judge_prompt.txt`](judge_prompt.txt) in
+this folder — *not* the one in `3_judge/`. That keeps this archive reproducible:
+`3_judge/` is free to evolve (new models/prompts, the multi-judge work) without
+changing what these frozen runners would produce. (The two judges are byte-identical
+today; the split is about provenance, not a behavior difference.) Each runner adds
+its own folder to the front of `sys.path` so `import judge` picks the local copy.
+
 ## What's here
 
 | Script | Targets × design | Output (`data/3_judged/`) |
