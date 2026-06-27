@@ -30,6 +30,7 @@ Run:  python glmm_dyads.py
 from __future__ import annotations
 
 import json
+import os
 import sys
 import warnings
 
@@ -52,7 +53,7 @@ def cat(nat):
 
 
 TARGET_LABEL = {"minimax/minimax-m3": "MiniMax-M3", "google/gemini-2.5-flash-lite": "Gemini-2.5-FL"}
-rows = [r for r in json.load(open("experiment_dyads_results.json", encoding="utf-8"))
+rows = [r for r in json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "3_judged", "2models_dyads_nationality.json"), encoding="utf-8"))
         if r["behavior"] in GRADED]
 df_all = pd.DataFrame([dict(
     refuse=1 if r["behavior"] == "refuse" else 0,

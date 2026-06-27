@@ -33,7 +33,8 @@ except (AttributeError, ValueError):
     pass
 warnings.filterwarnings("ignore")
 
-SRC = "experiment_dyads_results.json"
+import os
+SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "data", "3_judged", "2models_dyads_nationality.json")
 OUT = "results_report_dyads.html"
 GRADED = ("comply", "partial", "refuse")
 MODES = ["positive", "negative", "positive+negative"]

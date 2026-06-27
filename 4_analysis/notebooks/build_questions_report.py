@@ -8,8 +8,9 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))  # power_grabbing
 import significance as S
 
-df8 = S.load("experiment_full_results.json")     # Dataset 1: 8 langs x 576, minimax
-dfai = S.load("aiagent/data/experiment_ai_results.json")   # AI-narrator paired
+_J = lambda n: os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "data", "3_judged", n)
+df8 = S.load(_J("minimax_8langs.json"))            # Dataset 1: 8 langs x 576, minimax
+dfai = S.load(_J("minimax_aiagent.json"))  # Dataset 3: AI-narrator paired (human + _ai)
 esc = html.escape
 def f2(v): return "%.2f" % v
 def pf(p): return "&lt;0.001" if p < 0.001 else "%.3f" % p
@@ -202,6 +203,7 @@ footer{{margin-top:42px;padding-top:18px;border-top:1px solid var(--rule);font-s
   <footer>Generado por <code>Analysis/build_questions_report.py</code> + <code>Analysis/significance.py</code></footer>
 </div>
 '''
+os.makedirs("Analysis", exist_ok=True)
 open("Analysis/questions_report.html", "w", encoding="utf-8").write(HTML)
 print("wrote Analysis/questions_report.html", len(HTML), "bytes")
 print("Q1 mode:", [(i['level'], round(i['OR'],1)) for i in items[:0]] or [(r['level'], round(r['OR'],1)) for r in S.gee_factor(df8,'mode',ref='positive')[0]])

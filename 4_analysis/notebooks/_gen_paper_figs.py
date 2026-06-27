@@ -25,7 +25,7 @@ def brand_color(name, default="0.45"):
         if k in n: return c
     return default
 
-DATA = Path("data"); FIGS = Path("figures"); FIGS.mkdir(exist_ok=True)
+DATA = Path("../../data/4_analysis"); FIGS = Path("figures"); FIGS.mkdir(exist_ok=True)
 
 def wilson_ci(k, n, z=1.96):
     if n == 0: return (np.nan, np.nan)
@@ -92,7 +92,7 @@ print("fig8_behavior_spectrum.png OK")
 
 # ---- Fig dyad: who the power-grab harms
 from statsmodels.stats.contingency_tables import mcnemar
-dyad = pd.read_csv(DATA / "clean" / "dataset4_dyads.csv")
+dyad = pd.read_csv(DATA / "clean" / "dataset4_2models_dyads_nationality.csv")
 dg = dyad[dyad["mode"] == "positive+negative"].copy()
 dg["complied"] = 1 - dg["refused"]
 PAIRS = ["american__chinese", "american__french", "chinese__north-korean", "argentine__british"]

@@ -34,7 +34,7 @@ except (AttributeError, ValueError):
     pass
 warnings.filterwarnings("ignore")
 
-SRC = next(p for p in ("notebooks/data/raw/experiment_dyads_results.json",
+SRC = next(p for p in (os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "3_judged", "2models_dyads_nationality.json"),
                        "experiment_dyads_results.json") if os.path.exists(p))
 OUT = "results_report_dyads.html"
 GRADED = ("comply", "partial", "refuse")

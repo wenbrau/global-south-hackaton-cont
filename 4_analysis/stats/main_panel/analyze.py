@@ -2,7 +2,7 @@ import json, os
 from collections import Counter, defaultdict
 from statistics import pstdev
 
-R = [r for r in json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "2_run_targets", "results", "main_panel.json")))
+R = [r for r in json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "data", "3_judged", "5models_4langs.json")))
      if r.get("behavior") in ("comply", "partial", "refuse") and (r.get("response") or "").strip()]
 T = ["google/gemini-2.5-flash-lite", "qwen/qwen3.7-plus", "deepseek/deepseek-v4-pro", "minimax/minimax-m3"]
 nm = lambda t: t.split("/")[-1]

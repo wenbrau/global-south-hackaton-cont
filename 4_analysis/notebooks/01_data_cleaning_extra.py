@@ -68,9 +68,12 @@ def _to_bool(x):
     return str(x).strip().strip("'\"").lower() == "true"
 
 
-def clean(raw_file: Path, clean_file: Path):
+def clean(raw_file: Path, clean_file: Path, row_filter=None):
     with open(raw_file) as f:
-        df = pd.DataFrame(json.load(f))
+        records = json.load(f)
+    if row_filter is not None:
+        records = [r for r in records if row_filter(r)]
+    df = pd.DataFrame(records)
     n = len(df)
     cols_in = set(df.columns)
 
@@ -176,20 +179,25 @@ def clean(raw_file: Path, clean_file: Path):
     return df
 
 
+# raw judged outputs live at repo-root data/3_judged/; clean CSVs go to data/4_analysis/clean/.
+# dataset3 keeps only the AI-narrator rows (lang ending in "_ai") sliced from the full
+# aiagent_gemini run, which also contains the human-narrator baseline.
+_ai_only = lambda r: str(r.get("lang", "")).endswith("_ai")
+
 JOBS = [
-    ("data/raw/experiment_aiagent_gemini.json",
-     "data/clean/dataset3_aiagent_gemini.csv"),
-    ("data/raw/experiment_dyads_results.json",
-     "data/clean/dataset4_dyads.csv"),
-    ("data/raw/experiment_nationality_human_gemini_full.json",
-     "data/clean/dataset5_nationality_human_gemini.csv"),
-    ("data/raw/experiment_nationality_human_minimax_full.json",
-     "data/clean/dataset6_nationality_human_minimax.csv"),
+    ("../../data/3_judged/gemini_aiagent.json",
+     "../../data/4_analysis/clean/dataset3_gemini_aiagent.csv", _ai_only),
+    ("../../data/3_judged/2models_dyads_nationality.json",
+     "../../data/4_analysis/clean/dataset4_2models_dyads_nationality.csv", None),
+    ("../../data/3_judged/gemini_human_nationality.json",
+     "../../data/4_analysis/clean/dataset5_gemini_human_nationality.csv", None),
+    ("../../data/3_judged/minimax_human_nationality.json",
+     "../../data/4_analysis/clean/dataset6_minimax_human_nationality.csv", None),
 ]
 
 
 if __name__ == "__main__":
     here = Path(__file__).resolve().parent
-    for raw, clean_out in JOBS:
-        clean(here / raw, here / clean_out)
+    for raw, clean_out, row_filter in JOBS:
+        clean(here / raw, here / clean_out, row_filter)
     print("\nDone.")

@@ -49,7 +49,7 @@ from all_prompts_576_zh_ai import PROMPTS_576_ZH_AI
 
 TARGETS = [t.strip() for t in os.environ.get("TARGETS", "minimax/minimax-m3").split(",") if t.strip()]
 WORKERS = int(os.environ.get("WORKERS", "16"))
-OUT = os.environ.get("OUT", os.path.join(_HERE, "results", "experiment_8langs.json"))
+OUT = os.environ.get("OUT", os.path.join(_HERE, "..", "data", "3_judged", "minimax_8langs.json"))
 
 # lang -> bank (identical cells across all languages)
 BANKS = {

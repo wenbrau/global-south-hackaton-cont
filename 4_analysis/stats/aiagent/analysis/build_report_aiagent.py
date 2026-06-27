@@ -9,7 +9,7 @@ import html
 import math
 
 import os; os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
-ALL = json.load(open("../../2_run_targets/results/aiagent_minimax.json"))
+ALL = json.load(open("../../data/3_judged/minimax_aiagent.json"))
 DOMS = {"Rank", "Wealth", "Legal", "Epistemic", "Status", "Attentional"}
 PAIRS = [("en", "en_ai", "English"), ("es", "es_ai", "Español"), ("zh", "zh_ai", "中文")]
 BASE_LANGS = [b for b, _, _ in PAIRS]

@@ -37,7 +37,7 @@ TARGETS = [
     "arcee-ai/trinity-large-thinking",
 ]
 WORKERS = 100
-OUT = os.path.join(_HERE, "results", "probe150.json")
+OUT = os.path.join(_HERE, "..", "data", "3_judged", "probe150_7models.json")
 
 COMBOS = [tuple(x) for x in json.load(open(os.path.join(_HERE, "design150_combos.json")))]  # (domain,context,mode,scale)
 assert len(COMBOS) == 150 and len(set(COMBOS)) == 150

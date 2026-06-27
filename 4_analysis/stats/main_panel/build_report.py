@@ -9,7 +9,7 @@ import json, html, os
 from collections import Counter, defaultdict
 from statistics import pstdev
 
-ALL = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "2_run_targets", "results", "main_panel.json")))
+ALL = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "data", "3_judged", "5models_4langs.json")))
 # Report scope: the full 4x4 grid — es/en/zh/pt, all four complete and paired
 # across all 4 models (576 cells each). Cross-model comparisons group by the
 # factorial combo (domain x context x mode x scale), NOT by `i`: `i` aligns

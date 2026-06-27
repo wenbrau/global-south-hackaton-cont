@@ -84,7 +84,7 @@ else:
     _idx = _all
 ITEMS = [(i + 1, PROMPTS_NP[i]) for i in _idx]
 
-OUT = os.path.join(_HERE, "results", f"experiment_nationality_human_{'sample%d' % N_SAMPLE if N_SAMPLE else 'full'}.json")
+OUT = os.path.join(_HERE, "..", "data", "3_judged", f"nationality_human_minimax{'_sample%d' % N_SAMPLE if N_SAMPLE else ''}.json")
 
 # --- Resume support ---------------------------------------------------------------------------
 # If OUT already exists, reload it: keep every prompt that COMPLETED (behavior in comply/partial/

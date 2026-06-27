@@ -18,7 +18,7 @@ import numpy as np
 from scipy import stats as sps
 
 import os; os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
-ALL = json.load(open("../../2_run_targets/results/aiagent_minimax.json"))
+ALL = json.load(open("../../data/3_judged/minimax_aiagent.json"))
 DOMS = {"Rank", "Wealth", "Legal", "Epistemic", "Status", "Attentional"}
 PAIRS_LANG = [("en", "en_ai"), ("es", "es_ai"), ("zh", "zh_ai")]
 

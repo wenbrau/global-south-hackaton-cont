@@ -43,7 +43,7 @@ TARGETS = [
     "deepseek/deepseek-v4-pro",
 ]
 WORKERS = 16
-OUT = "experiment_150_results.json"
+OUT = "probe150_3models_legacy.json"
 
 _lock = threading.Lock()
 _done = 0

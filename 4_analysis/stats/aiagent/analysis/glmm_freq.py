@@ -16,7 +16,7 @@ import statsmodels.formula.api as smf
 from statsmodels.discrete.conditional_models import ConditionalLogit
 
 import os; os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
-AIAGENT_DATA = os.environ.get("AIAGENT_DATA", "../../2_run_targets/results/aiagent_minimax.json")
+AIAGENT_DATA = os.environ.get("AIAGENT_DATA", "../../data/3_judged/minimax_aiagent.json")
 AIAGENT_OUT = os.environ.get("AIAGENT_OUT", "aiagent/reports/glmm_freq_results.json")
 ALL = json.load(open(AIAGENT_DATA))
 DOMS = {"Rank", "Wealth", "Legal", "Epistemic", "Status", "Attentional"}

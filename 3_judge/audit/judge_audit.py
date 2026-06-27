@@ -20,7 +20,7 @@ JUDGE_MODEL = "openai/gpt-5.4-nano"
 SEED = 42
 N = 10
 
-R = json.load(open("experiment_150_results.json"))
+R = json.load(open(os.path.join(_d, "data", "3_judged", "probe150_3models_legacy.json")))
 random.seed(SEED)
 sample = random.sample([r for r in R if r.get("behavior") not in (None, "error", "parse_error")], N)
 

@@ -41,7 +41,7 @@ TARGETS = [
 ]
 BANKS = {"es": ES, "en": EN, "zh": ZH, "pt": PT}
 WORKERS = 100
-OUT = os.path.join(_HERE, "results", "main_panel.json")
+OUT = os.path.join(_HERE, "..", "data", "3_judged", "5models_4langs.json")
 
 ITEMS = [(lang, i, combo) for lang, bank in BANKS.items() for i, combo in enumerate(bank, 1)]
 

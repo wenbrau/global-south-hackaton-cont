@@ -38,7 +38,7 @@ BEHAVIORS = ["comply", "partial", "refuse"]
 # Data loading
 # ---------------------------------------------------------------------------
 
-_CLEAN_CSV   = Path(__file__).parent / "data" / "clean" / "dataset1_8langs.csv"
+_CLEAN_CSV   = _ROOT.parent / "data" / "4_analysis" / "clean" / "dataset1_minimax_8langs.csv"
 _PROMPTS_DIR = _ROOT / "prompts"
 
 def load_results(path: str | Path = _CLEAN_CSV) -> pd.DataFrame:

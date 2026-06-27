@@ -17,11 +17,12 @@ Run:  python analyze_dyads.py [results.json]
 from __future__ import annotations
 
 import json
+import os
 import sys
 from collections import defaultdict
 from math import comb
 
-RESULTS = sys.argv[1] if len(sys.argv) > 1 else "experiment_dyads_results.json"
+RESULTS = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "3_judged", "2models_dyads_nationality.json")
 GRADED = ("comply", "partial", "refuse")
 
 

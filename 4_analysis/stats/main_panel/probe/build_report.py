@@ -4,16 +4,19 @@
 .json); the four main-benchmark models are pulled from experiment_full_results
 .json for the SAME 150 combos x EN/ZH (matched by combo+lang, never by `i`).
 Same blind judge. n=300 per model (200 grabs, 100 controls)."""
-import json, html
+import json, html, os
 from collections import Counter
 
+_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "..")
+_J = lambda *p: os.path.join(_ROOT, *p)
+
 # --- the approved 150-combo design, language crossed (EN+ZH) -------------
-_COMBOS = [tuple(x) for x in json.load(open("design150_combos.json"))]  # (domain,context,mode,scale)
+_COMBOS = [tuple(x) for x in json.load(open(_J("2_run_targets", "design150_combos.json")))]  # (domain,context,mode,scale)
 CELLS = {(d, c, m, s, l) for (d, c, m, s) in _COMBOS for l in ("en", "zh")}  # 300 cells
 M4 = ["google/gemini-2.5-flash-lite", "qwen/qwen3.7-plus", "deepseek/deepseek-v4-pro", "minimax/minimax-m3"]
 
-MINI = json.load(open("results.json"))
-BIG = json.load(open("../results.json"))
+MINI = json.load(open(_J("data", "3_judged", "probe150_7models.json")))        # 7 secondary models, en+zh
+BIG = json.load(open(_J("data", "3_judged", "5models_4langs.json")))   # 4 main models pulled for the 150 cells
 # one row per (target, cell) for the 4 main models on the matching 40 cells
 _seen, _big_sub = set(), []
 for r in BIG:
