@@ -19,4 +19,6 @@ __pycache__/
 
 # Claude Code local state
 /.claude
+
+# Notes on what to do next
 notes_w
