@@ -25,7 +25,7 @@ aware entry points if a run ever has to be extended.
 | `run_probe150_7models.py` | 7 secondary models × 150-combo subset × en/zh | `probe150_7models.json` |
 
 The 150-combo subset design is in
-[`../../1_create_dataset/subsets/design150_combos.json`](../../1_create_dataset/subsets/design150_combos.json).
+[`../1_create_dataset/subsets/design150_combos.json`](../1_create_dataset/subsets/design150_combos.json).
 
 ## The right way going forward (decoupled)
 
@@ -33,11 +33,11 @@ Don't add new all-in-one runners. Instead split the two stages so judging is che
 to repeat (this is what the multi-judge work needs):
 
 1. **Target only →** write `data/2_responses/<name>.json` (answers, no verdict).
-2. **Judge →** [`../../3_judge/run_judge.py`](../../3_judge/run_judge.py) reads that
+2. **Judge →** [`../3_judge/run_judge.py`](../3_judge/run_judge.py) reads that
    file and writes `data/3_judged/<name>.json`. Re-judging (different model /
    prompt / effort) never re-queries the targets.
 
 The existing `data/2_responses/` snapshots for the runs here were derived
 *backwards* from `data/3_judged/` by
-[`../make_responses_snapshot.py`](../make_responses_snapshot.py) (a one-time legacy
-backfill, since these runners judged in place).
+[`../2_run_targets/make_responses_snapshot.py`](../2_run_targets/make_responses_snapshot.py)
+(a one-time legacy backfill, since these runners judged in place).

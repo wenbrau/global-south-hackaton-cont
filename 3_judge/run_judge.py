@@ -21,7 +21,7 @@ Run (from the repo root):
     .venv/bin/python 3_judge/run_judge.py                       # every file in data/2_responses/
 
 History: the *existing* ``data/3_judged/`` files were produced by the older
-``2_run_targets/hackaton_runs/run_*.py`` runners, which judged INLINE while generating; their
+``hackaton_runs/run_*.py`` runners, which judged INLINE while generating; their
 ``data/2_responses/`` snapshots were derived backwards by
 ``2_run_targets/make_responses_snapshot.py``. This script is the forward
 replacement for that inline step — new runs should write responses with a target

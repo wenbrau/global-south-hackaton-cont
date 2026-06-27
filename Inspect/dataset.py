@@ -12,7 +12,7 @@ as ``Sample.target`` ("control" | "grab") for the scorer, and mirror the full
 tensor coordinates in ``Sample.metadata`` for the analysis — but NONE of it
 appears in the prompt the model sees, so the judge stays blind.
 
-This is the Inspect counterpart of the ``2_run_targets/hackaton_runs/run_*.py`` flat item
+This is the Inspect counterpart of the ``hackaton_runs/run_*.py`` flat item
 lists; it reuses the exact same banks, so an Inspect run and the custom runners
 are comparable.
 """
