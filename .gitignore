@@ -17,8 +17,47 @@
 __pycache__/
 *.pyc
 
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+**/.venv/
+
 # Claude Code local state
 /.claude
 
 # Notes on what to do next
 notes_w
+
+# --- Other secrets / credential-bearing files ---
+# Keys, certs, keystores
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+*.der
+*.keystore
+*.jks
+id_rsa
+id_dsa
+id_ecdsa
+id_ed25519
+# Cloud / service-account credentials
+*credentials*.json
+*service-account*.json
+*service_account*.json
+gcp-*.json
+aws-credentials
+.aws/
+# Package-manager / tooling auth
+.npmrc
+.pypirc
+.netrc
+# Generic secret files
+secrets.*
+*secret*.yaml
+*secret*.yml
+*.secrets

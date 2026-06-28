@@ -5,10 +5,10 @@ Subsets the frozen main panel ``data/3_judged/5models_4langs.json`` to the
 (150 combos x 2 langs x 5 models = 1,500 rows). Writes two ADDITIVE files under
 ``data_regrade/probe/`` — ``data/`` is never touched:
 
-  probe1500_responses.json  target-only snapshot (the run_judge.py input):
+  probe1500_target_responses.json  target-only snapshot (the run_judge.py input):
                             the 2_responses column contract, judge verdicts stripped.
-  probe1500_baseline.json   the SAME rows WITH the production nano/3-class verdicts —
-                            the baseline for 4_analysis/compare_judges.py.
+  probe1500_gptnano_3class.json    the SAME rows WITH the production gpt-nano/3-class
+                            verdicts — the baseline for 4_analysis/compare_judges.py.
 
 Both carry identical (target, lang, i) keys, so a regrade of the responses file
 joins cleanly against the baseline. Run from anywhere:
@@ -59,8 +59,8 @@ def main():
     baseline = [{k: r.get(k) for k in RESPONSE_COLS + JUDGE_COLS} for r in sel]
 
     os.makedirs(OUT_DIR, exist_ok=True)
-    rp = os.path.join(OUT_DIR, "probe1500_responses.json")
-    bp = os.path.join(OUT_DIR, "probe1500_baseline.json")
+    rp = os.path.join(OUT_DIR, "probe1500_target_responses.json")
+    bp = os.path.join(OUT_DIR, "probe1500_gptnano_3class.json")
     json.dump(responses, open(rp, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
     json.dump(baseline, open(bp, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
 
