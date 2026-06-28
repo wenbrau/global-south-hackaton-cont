@@ -77,13 +77,26 @@ behavior" — the user's selected lines 5–6).
 
 | Variant | Definition |
 |---|---|
-| **Binary collapse** | Ask **refuse vs not-refuse directly** (2 classes), not derived post-hoc. Tests whether the partial-bucket placement is doing the work. **→ becomes the base prompt for all later tests.** |
-| **Minimal / terse** | One-sentence rubric, **no examples, no guardrail line** (drops selected lines 5–6). Tests sensitivity to scaffolding. |
-| **Inverted** | Positive class = "did the assistant **help**", reverse-coded. Catches anchoring/acquiescence bias. |
+| **Binary collapse** | Ask **refuse vs not-refuse directly** — a single `refuse: "yes"/"no"` output, **no `partial`, no harm_acknowledgment.** Tests whether the partial-bucket placement is doing the work. **→ becomes the base prompt for all later tests.** |
+| **Minimal / terse** | The binary refuse question with **no examples, no guardrail line** (drops selected lines 5–6). Also refuse-only. Tests sensitivity to scaffolding. |
 | **Chinese prompt** | Translate the (binary-collapse) prompt to **zh** (no es). Isolated as its own step — run on a **US judge (nano)** and a **CH judge (glm)** to see if a Chinese-language prompt moves either. |
 
-Implementation: add `--prompt-file` to `run_judge.py` (it currently loads the fixed
-`judge_prompt.txt` via `judge.py`); stage each variant as its own text file.
+> **Harm-flagging is dropped from the test prompts.** The binary/minimal/zh prompts emit only
+> `refuse` — so harm-flag agreement and the harm-flag headline metric **cannot be computed for
+> these configs**, and a refuse-only final judge would stop producing `harm_acknowledgment`
+> for re-graded data. If harm-flagging must survive, it needs a separate decision (keep the
+> 3-class/harm prompt for one panel member, or a dedicated harm pass) — see the run plan.
+
+Implementation — **two judge scripts**, picked by output schema:
+- `run_judge.py` — **refuse-only**: emits a single `refuse: yes/no`, default prompt
+  `3_judge/prompts/binary_collapse.txt`. This is what the tests use.
+- `run_judge_3behaviors_harm.py` — **legacy 3-class `behavior` + `harm_acknowledgment`**
+  (the schema `data/3_judged/` and `compare_judges.py` were built on).
+
+Both take `--prompt-file` and capture `usage`. Comparison is **three scripts** over a shared
+engine: `compare_judges_3behaviors.py` (3class vs 3class, legacy), `compare_judges_3behaviors_vs_binary.py`
+(Step 1: binary regrade vs the 3-class baseline collapsed), and `compare_judges.py` (binary vs
+binary, Steps 3–6).
 
 ---
 
@@ -102,8 +115,8 @@ Each config = grade the 1,500-row probe, then `compare_judges.py`. Order matters
 **Step 3 — Other-family CH judge, base = binary-collapse (English prompt) (1 config)**
 - `glm-5.2` — the geo-diverse anchor; also the English-prompt baseline for the Step 5 zh test.
 
-**Step 4 — Prompt-scaffolding variants, on current judge, base = binary-collapse (2 configs)**
-- `nano` + minimal · `nano` + inverted
+**Step 4 — Prompt-scaffolding variant, on current judge, base = binary-collapse (1 config)**
+- `nano` + minimal — tests sensitivity to scaffolding (drops examples + guardrail line).
 
 **Step 5 — Prompt-language test, base = binary-collapse translated to zh (2 configs)**
 - `nano` + zh-prompt (US judge) · `glm-5.2` + zh-prompt (CH judge)
@@ -114,7 +127,7 @@ Each config = grade the 1,500-row probe, then `compare_judges.py`. Order matters
 - `gpt-5.4-mini` · `gpt-5.4` (full, = frontier anchor). Run last — priciest, and only worth
   it if a cheaper judge hasn't already settled the panel.
 
-**New configs = 2 + 1 + 2 + 2 + 2 = 9**, each × 1,500 results = **13,500 judge calls.**
+**New configs = 2 + 1 + 1 + 2 + 2 = 8**, each × 1,500 results = **12,000 judge calls.**
 (Production-3-class nano baseline is free; binary-collapse nano is Step 1, not free.)
 
 ---
@@ -163,7 +176,7 @@ today**, so their prices are **placeholder tiers, confirmed live by the smoke** 
 
 ---
 
-## Budget — TEST (1,500-result probe, 9 configs)
+## Budget — TEST (1,500-result probe, 8 configs)
 
 1,500 calls per config (1 judge call per result). $/result from the table above.
 
@@ -171,29 +184,31 @@ today**, so their prices are **placeholder tiers, confirmed live by the smoke** 
 |---|---|---:|---|---:|
 | 1 binary-collapse (nano, grok) | 2 | 3,000 | 0.0025, 0.0035 | ~$9 |
 | 3 glm-5.2 (binary, en) | 1 | 1,500 | 0.0034 | ~$5 |
-| 4 scaffolding variants (nano: minimal, inverted) | 2 | 3,000 | 0.0025 | ~$8 |
+| 4 minimal (nano) | 1 | 1,500 | 0.0025 | ~$4 |
 | 5 zh-prompt (nano, glm) | 2 | 3,000 | 0.0025, 0.0034 | ~$9 |
 | 6 powerful gpt (mini, full) | 2 | 3,000 | 0.0061 / 0.0177 | ~$36 |
-| **Total** | **9** | **13,500** | | **~$66** |
+| **Total** | **8** | **12,000** | | **~$62** |
 
-**Base estimate ≈ $66** — all 9 configs at placeholder prices, calibrated **1,500 input /
-650 output** tokens/result. Variance is driven by three things: whether `gpt-5.4 full` runs
-(~$27, the single biggest line), the unconfirmed gpt placeholder prices, and high-effort
-**reasoning verbosity** (output tokens, which scale *every* config).
+**Base estimate ≈ $62** — all 8 configs at placeholder prices, calibrated **1,500 input /
+650 output** tokens/result. (Refuse-only prompts emit a tiny JSON, but at high effort the
+**reasoning** tokens dominate output, so $/result is ~unchanged.) Variance is driven by three
+things: whether `gpt-5.4 full` runs (~$27, the single biggest line), the unconfirmed gpt
+placeholder prices, and high-effort **reasoning verbosity** (output tokens, which scale *every*
+config).
 
-**Lower bound ≈ $35.** Assumptions:
+**Lower bound ≈ $32.** Assumptions:
 - **`gpt-5.4 full` deferred** to a conditional pass (run only if `mini`'s κ justifies the
-  frontier) → drops the $27 line; 8 configs, 12,000 calls.
+  frontier) → drops the $27 line; 7 configs, 10,500 calls.
 - gpt placeholder prices (nano, mini) hold or come in cheaper.
-- Reasoning output **lighter** than calibrated (~500 tok — verdict JSON is short).
+- Reasoning output **lighter** than calibrated (~500 tok).
 
-**Upper bound ≈ $110.** Assumptions:
+**Upper bound ≈ $105.** Assumptions:
 - **`gpt-5.4 full` priced ~50% above placeholder** (6 / 27 $/1M) and **`mini` ~25% above**.
-- High effort runs **verbose** (~900 output tok vs 650) → inflates all 9 configs.
+- High effort runs **verbose** (~900 output tok vs 650) → inflates all 8 configs.
 - **Optional add-ons run:** re-confirm low/medium effort on nano under the new base prompt
-  (+2 nano configs); 11 configs, 16,500 calls.
+  (+2 nano configs).
 
-**Test estimate ≈ $35–$110** (base ~$66). Almost entirely a function of `gpt-5.4 full` and
+**Test estimate ≈ $32–$105** (base ~$62). Almost entirely a function of `gpt-5.4 full` and
 output verbosity — the Verification §4 smoke replaces both with live `usage` numbers before
 the bulk of the spend.
 
@@ -228,17 +243,19 @@ A panel grades **every row with all 3 judges**, so **calls = 3 × N** and
 | ×5 growth (131,040) | 393,120 | ~$1,232 | ~$3,577 |
 
 ### Headline numbers
-- **Tests to decide the grader: ~$35–$110, base ~$66** (9 configs, 13,500 calls).
+- **Tests to decide the grader: ~$32–$105, base ~$62** (8 configs, 12,000 calls).
 - **Final 3-judge panel at today's size (N=26,208): ~$246 (cheapest) to ~$716 (most expensive).**
 - Scales linearly with N; ×3 growth ≈ $740–$2,150.
 
 ---
 
 ## Decision criteria → pick panel + aggregation
-From each `compare_judges.py` record: **binary-refuse κ** (primary), 3-class κ, harm-flag κ,
-drift on the 5 headline metrics, and $/call. Choose: (1) the base prompt (binary-collapse if
-Step 1 holds, else 3-class); (2) which prompt variant maximizes κ without inflating
-over-refusal; (3) the 3 panel members — family-diverse, off-target, high κ, acceptable cost.
+From each `compare_judges.py` record: **binary-refuse κ** (primary, the only κ the refuse-only
+prompts support — 3-class and harm-flag κ apply only if a 3-class/harm prompt is kept), drift
+on the refusal headline metrics (over-refusal, sensitivity, disempowerment, discrimination),
+and $/call. Choose: (1) the base prompt (binary-collapse if Step 1 holds, else 3-class);
+(2) whether minimal scaffolding holds κ; (3) the 3 panel members — family-diverse, off-target,
+high κ, acceptable cost. **Open: does the panel need a harm-flagging member?** (see (c) note).
 **Aggregation:** add `4_analysis/ensemble_judges.py` doing **majority vote on binary-refuse**,
 reporting panel-vs-member and inter-judge κ (realizes the ensemble goal).
 
