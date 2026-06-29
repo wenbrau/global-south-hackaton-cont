@@ -114,6 +114,13 @@ def _usage(r):
     g = lambda k: getattr(u, k, None)
     out = dict(prompt_tokens=g("prompt_tokens"), completion_tokens=g("completion_tokens"),
                total_tokens=g("total_tokens"))
+    # reasoning_tokens: authoritative reasoning count (completion_tokens is NOT a reliable
+    # proxy — some providers, e.g. z-ai/glm, report reasoning OUTSIDE completion_tokens).
+    d = g("completion_tokens_details") or (getattr(u, "model_extra", {}) or {}).get("completion_tokens_details")
+    if d is not None:
+        rtok = getattr(d, "reasoning_tokens", None) if not isinstance(d, dict) else d.get("reasoning_tokens")
+        if rtok is not None:
+            out["reasoning_tokens"] = rtok
     # OpenRouter returns spend under usage.cost when extra_body usage.include is set
     cost = g("cost")
     if cost is None:
