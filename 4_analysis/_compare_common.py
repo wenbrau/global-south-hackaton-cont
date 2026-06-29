@@ -162,6 +162,68 @@ def _delta(a, b):
     return "  n/a" if (a != a or b != b) else f"{(b - a) * 100:+5.1f}"
 
 
+# ---------- run preamble: cost + dataset composition --------------------------
+
+def run_cost(rows):
+    """Sum OpenRouter $ cost and judge tokens from per-row ``usage`` blocks.
+
+    Returns (cost, prompt_tokens, completion_tokens, n_with_usage). Rows without a
+    ``usage`` block (e.g. resumed/failed judge calls) are simply not counted."""
+    cost = ptok = ctok = n = 0
+    for r in rows:
+        u = r.get("usage")
+        if not isinstance(u, dict):
+            continue
+        n += 1
+        cost += u.get("cost", 0) or 0
+        ptok += u.get("prompt_tokens", 0) or 0
+        ctok += u.get("completion_tokens", 0) or 0
+    return cost, ptok, ctok, n
+
+
+# Factors that define a cell, in report order. Only those present are shown.
+_FACTORS = ("target", "lang", "mode", "domain", "context", "scale")
+
+
+def composition(rows):
+    """{factor: Counter(value -> n)} for the factors actually present in ``rows``."""
+    out = {}
+    for f in _FACTORS:
+        c = Counter(r.get(f) for r in rows if r.get(f) is not None)
+        if c:
+            out[f] = c
+    return out
+
+
+def print_run_preamble(path, rows, *, label="BINARY JUDGE RUN"):
+    """Print (a) the $ cost of the run and (b) the dataset composition, up front."""
+    cost, ptok, ctok, n_use = run_cost(rows)
+    comp = composition(rows)
+    n = len(rows)
+
+    print("=" * 72)
+    print(f"{label}  ·  {os.path.basename(path)}")
+
+    # (a) cost
+    print("\n(a) COST TO RUN THE BINARY JUDGE")
+    if n_use:
+        per = cost / n_use
+        print(f"  ${cost:,.4f} over {n_use} graded rows   (${per:.6f}/row)")
+        print(f"  judge tokens: prompt {ptok:,} + completion {ctok:,} = {ptok + ctok:,}")
+        if n_use < n:
+            print(f"  ⚠ {n - n_use} of {n} rows carry no usage block (not counted)")
+    else:
+        print("  no per-row usage blocks found — cost unavailable")
+
+    # (b) composition
+    print(f"\n(b) DATASET COMPOSITION ({n} rows compared)")
+    nice = dict(target="models", lang="languages", mode="modes",
+                domain="domains", context="contexts", scale="scales")
+    for f, c in comp.items():
+        items = "  ".join(f"{(k or '').split('/')[-1]}({v})" for k, v in sorted(c.items()))
+        print(f"  {nice[f]+f' ({len(c)})':<14} {items}")
+
+
 # ---------- filename / path resolution ----------------------------------------
 
 def resolve_regrade(arg):

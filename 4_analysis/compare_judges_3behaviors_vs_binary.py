@@ -43,6 +43,10 @@ def main():
     if not os.path.exists(base_path):
         raise SystemExit(f"baseline not found: {base_path}")
 
+    # Up front: (a) $ cost of the binary judge run, (b) dataset composition
+    # (models, languages, modes, domains, contexts, scales) — both from the regrade file.
+    cc.print_run_preamble(regrade_path, cc._load(regrade_path))
+
     out_path = args.out or cc._J("data_regrade", f"compare_{stem}_vs_3class.json")
     cc.run_compare(base_path, regrade_path, base_kind="3class", regrade_kind="binary",
                    dataset=dataset, grader=grader, out_path=out_path, examples=args.examples)
