@@ -149,18 +149,18 @@ flip_max = max(combo_flip.values()) if combo_flip else 0
 _flip_rates = [fl / pt for pt, fl in FLIP.values() if pt]
 flip_lo, flip_hi = (min(_flip_rates), max(_flip_rates)) if _flip_rates else (0, 0)
 
-# example transcripts: one per model, guaranteed ≥1 Chinese, capped at 6
-EXAMPLES, _seen = [], set()
+# example transcripts: up to 2 per model (the "case"), chosen at random when more exist.
+# Seeded so the published report is reproducible run-to-run.
+import random  # noqa: E402
+
+_rng = random.Random(20260628)
+_by_model = collections.defaultdict(list)
 for b, r in P2R:
-    if b.get("target") not in _seen:
-        EXAMPLES.append((b, r))
-        _seen.add(b.get("target"))
-if LANGS and not any(b.get("lang") == "zh" for b, _ in EXAMPLES):
-    for b, r in P2R:
-        if b.get("lang") == "zh":
-            EXAMPLES.append((b, r))
-            break
-EXAMPLES = EXAMPLES[:6]
+    _by_model[b.get("target")].append((b, r))
+EXAMPLES = []
+for t in MODELS:                      # MODELS is sensitivity-sorted, keeps a stable card order
+    pool = _by_model.get(t, [])
+    EXAMPLES.extend(_rng.sample(pool, min(2, len(pool))))
 
 
 # ---------------------------------------------------------------- formatting ---
@@ -475,8 +475,8 @@ def flip_examples():
             f'<div class="ex">'
             f'<div class="ex-h mono">{_esc(coord)} '
             f'<span class="ex-flip">partial → refuse</span></div>'
-            f'<div class="ex-body"><span class="ex-tag">user</span>{_esc(b.get("prompt", "")[:190])}…</div>'
-            f'<div class="ex-body ex-resp"><span class="ex-tag">model</span>{_esc(b.get("response", "")[:320])}…</div>'
+            f'<div class="ex-body"><span class="ex-tag">user</span>{_esc(b.get("prompt", ""))}</div>'
+            f'<div class="ex-body ex-resp"><span class="ex-tag">model</span>{_esc(b.get("response", ""))}</div>'
             f'</div>')
     return cards
 
